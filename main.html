@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CCTV Quotation Website</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    // Data for products
+    const recorders = {
+      NVR: [
+        { id: 1, name: 'NVR1', storage: '1TB', channels: 4, price: 200, features: ['H.265 Compression', '4K Output', 'Remote Access'], image: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630' },
+        { id: 2, name: 'NVR2', storage: '2TB', channels: 8, price: 300, features: ['8 PoE Ports', 'Mobile App Support', 'Cloud Backup'], image: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630' },
+        { id: 3, name: 'NVR3', storage: '4TB', channels: 16, price: 500, features: ['16 PoE Ports', 'AI Analytics', 'RAID Support'], image: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630' },
+        { id: 4, name: 'NVR4', storage: '6TB', channels: 32, price: 700, features: ['32 PoE Ports', '4K Ultra HD', 'Advanced Security'], image: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630' },
+      ],
+      DVR: [
+        { id: 5, name: 'DVR1', storage: '1TB', channels: 4, price: 150, features: ['H.264 Compression', '1080p Output', 'Easy Setup'], image: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630' },
+        { id: 6, name: 'DVR2', storage: '2TB', channels: 8, price: 250, features: ['8 Channels', 'Mobile Viewing', 'Night Vision Support'], image: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630' },
+        { id: 7, name: 'DVR3', storage: '4TB', channels: 16, price: 400, features: ['16 Channels', 'Motion Detection', 'Backup USB'], image: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630' },
+        { id: 8, name: 'DVR4', storage: '6TB', channels: 32, price: 600, features: ['32 Channels', 'High Definition', 'Remote Monitoring'], image: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630' },
+      ],
+    };
+
+    const cameras = {
+      IP: [
+        { 
+          id: 1, 
+          type: 'Bullet', 
+          name: 'Normal Bullet Camera', 
+          specs: '4MP, 30m IR', 
+          price: 150, 
+          features: ['Weatherproof', 'Wide Angle', 'Motion Detection'],
+          images: {
+            main: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+            day: 'https://via.placeholder.com/1200x630?text=Day+Footage',
+            night: 'https://via.placeholder.com/1200x630?text=Night+Footage'
+          }
+        },
+        { 
+          id: 2, 
+          type: 'Bullet', 
+          name: 'Day & Night Bullet Camera', 
+          specs: '5MP, 40m IR', 
+          price: 180, 
+          features: ['Low-Light Performance', 'IP67 Rating', 'Smart IR'],
+          images: {
+            main: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+            day: 'https://via.placeholder.com/1200x630?text=Day+Footage',
+            night: 'https://via.placeholder.com/1200x630?text=Night+Footage'
+          }
+        },
+        { 
+          id: 3, 
+          type: 'Dome', 
+          name: 'Normal Dome Camera', 
+          specs: '4MP, 25m IR', 
+          price: 140, 
+          features: ['Vandal Resistant', 'Wide Dynamic Range', 'Compact Design'],
+          images: {
+            main: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+            day: 'https://via.placeholder.com/1200x630?text=Day+Footage',
+            night: 'https://via.placeholder.com/1200x630?text=Night+Footage'
+          }
+        },
+        { 
+          id: 4, 
+          type: 'Dome', 
+          name: 'Day & Night Dome Camera', 
+          specs: '5MP, 35m IR', 
+          price: 170, 
+          features: ['Night Vision', 'IP66 Rating', 'Audio Support'],
+          images: {
+            main: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+            day: 'https://via.placeholder.com/1200x630?text=Day+Footage',
+            night: 'https://via.placeholder.com/1200x630?text=Night+Footage'
+          }
+        },
+      ],
+      Analog: [
+        { 
+          id: 5, 
+          type: 'Bullet', 
+          name: 'Analog Bullet Camera', 
+          specs: '2MP, 20m IR', 
+          price: 80, 
+          features: ['Cost-Effective', 'Easy Installation', 'IR Night Vision'],
+          images: {
+            main: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+            day: 'https://via.placeholder.com/1200x630?text=Day+Footage',
+            night: 'https://via.placeholder.com/1200x630?text=Night+Footage'
+          }
+        },
+        { 
+          id: 6, 
+          type: 'Dome', 
+          name: 'Analog Dome Camera', 
+          specs: '2MP, 15m IR', 
+          price: 75, 
+          features: ['Discreet Design', '1080p Resolution', 'IR Cut Filter'],
+          images: {
+            main: 'https://images.ctfassets.net/hrltx12pl8hq/28ECAQiPJZ78hxatLTa7Ts/2f695d869736ae3b0de3e56ceaca3958/free-nature-images.jpg?fit=fill&w=1200&h=630',
+            day: 'https://via.placeholder.com/1200x630?text=Day+Footage',
+            night: 'https://via.placeholder.com/1200x630?text=Night+Footage'
+          }
+        },
+      ],
+    };
+
+    const storageOptions = [
+      { id: 1, name: '500GB HDD', size: '500GB', price: 50, daysPerCamera: 15, features: ['SATA Interface', 'Reliable Storage', '7200 RPM'], image: 'https://via.placeholder.com/1200x630?text=Storage' },
+      { id: 2, name: '1TB HDD', size: '1TB', price: 80, daysPerCamera: 30, features: ['High Capacity', 'Durable', '24/7 Operation'], image: 'https://via.placeholder.com/1200x630?text=Storage' },
+      { id: 3, name: '2TB HDD', size: '2TB', price: 120, daysPerCamera: 60, features: ['Extended Storage', 'Low Power', 'High Speed'], image: 'https://via.placeholder.com/1200x630?text=Storage' },
+      { id: 4, name: '4TB HDD', size: '4TB', price: 200, daysPerCamera: 120, features: ['Maximum Capacity', 'Optimized for CCTV', 'Reliable'], image: 'https://via.placeholder.com/1200x630?text=Storage' },
+    ];
+
+    const wiresOptions = [
+      { id: 1, name: 'Standard Cat 6', type: 'Normal', price: 0.5, unit: 'per meter', features: ['500MHz Bandwidth', 'Indoor Use', 'Cost-Effective'], image: 'https://via.placeholder.com/1200x630?text=Cat+6+Wire' },
+      { id: 2, name: 'Premium Cat 6', type: 'Normal', price: 0.8, unit: 'per meter', features: ['Enhanced Shielding', 'High Speed', 'Durable'], image: 'https://via.placeholder.com/1200x630?text=Cat+6+Wire' },
+      { id: 3, name: 'Outdoor Cat 6', type: 'Normal', price: 1.0, unit: 'per meter', features: ['Weatherproof', 'UV Resistant', 'Outdoor Use'], image: 'https://via.placeholder.com/1200x630?text=Cat+6+Wire' },
+      { id: 4, name: 'Armoured Cat 6', type: 'Armoured', price: 1.5, unit: 'per meter', features: ['Armoured Protection', 'Heavy Duty', 'Long-Lasting'], image: 'https://via.placeholder.com/1200x630?text=Cat+6+Wire' },
+    ];
+
+    const poeSwitches = [
+      { id: 1, name: '4-Port PoE Switch', ports: 4, price: 60, features: ['Gigabit Speed', 'PoE+', 'Plug & Play'], image: 'https://via.placeholder.com/1200x630?text=PoE+Switch' },
+      { id: 2, name: '8-Port PoE Switch', ports: 8, price: 100, features: ['High Power Budget', 'VLAN Support', 'Easy Setup'], image: 'https://via.placeholder.com/1200x630?text=PoE+Switch' },
+      { id: 3, name: '16-Port PoE Switch', ports: 16, price: 180, features: ['Large Capacity', 'QoS Support', 'Reliable'], image: 'https://via.placeholder.com/1200x630?text=PoE+Switch' },
+      { id: 4, name: '24-Port PoE Switch', ports: 24, price: 250, features: ['Enterprise Grade', 'High Bandwidth', 'Robust'], image: 'https://via.placeholder.com/1200x630?text=PoE+Switch' },
+    ];
+
+    const cameraRacks = [
+      { id: 1, name: 'Standard Rack', capacity: 'Up to 8 cameras', price: 40, features: ['Compact Design', 'Easy Installation', 'Durable'], image: 'https://via.placeholder.com/1200x630?text=Camera+Rack' },
+      { id: 2, name: 'Large Rack', capacity: 'Up to 16 cameras', price: 80, features: ['High Capacity', 'Ventilated', 'Sturdy Build'], image: 'https://via.placeholder.com/1200x630?text=Camera+Rack' },
+    ];
+
+    const accessories = [
+      { id: 1, name: 'Power Supply', category: 'Power', price: 30, features: ['12V DC', 'Stable Output', 'Overload Protection'], image: 'https://via.placeholder.com/1200x630?text=Power+Supply' },
+      { id: 2, name: 'Connectors', category: 'Connectivity', price: 20, features: ['RJ45 Compatible', 'Easy to Crimp', 'Reliable'], image: 'https://via.placeholder.com/1200x630?text=Connectors' },
+      { id: 3, name: 'Monitor', category: 'Display', price: 200, features: ['24-inch', '1080p Resolution', 'HDMI Input'], optional: true, image: 'https://via.placeholder.com/1200x630?text=Monitor' },
+      { id: 4, name: 'Mounting Brackets', category: 'Installation', price: 15, features: ['Adjustable', 'Weatherproof', 'Universal Fit'], optional: true, image: 'https://via.placeholder.com/1200x630?text=Mounting+Brackets' },
+    ];
+
+    // ProductCard Component
+    function ProductCard({ item, isSelected, onSelect, type, quantity, onQuantityChange }) {
+      const [currentImage, setCurrentImage] = useState(type === 'camera' ? item.images.main : item.image);
+
+      return (
+        <div
+          className={`p-6 rounded-2xl bg-white shadow-lg cursor-pointer transition-all duration-200 ${
+            isSelected ? 'border-2 border-blue-500' : 'border border-gray-200'
+          } hover:shadow-xl`}
+          onClick={() => onSelect(item)}
+        >
+          {type === 'camera' ? (
+            <div className="relative">
+              <img src={currentImage} alt={item.name} className="w-full h-32 object-cover rounded-lg mb-4 sm:h-40 lg:h-48" />
+              <div className="flex gap-2 mt-2">
+                <button
+                  className="flex-1 text-sm px-2 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  onClick={(e) => { e.stopPropagation(); setCurrentImage(item.images.main); }}
+                >
+                  Camera
+                </button>
+                <button
+                  className="flex-1 text-sm px-2 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  onClick={(e) => { e.stopPropagation(); setCurrentImage(item.images.day); }}
+                >
+                  Day
+                </button>
+                <button
+                  className="flex-1 text-sm px-2 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  onClick={(e) => { e.stopPropagation(); setCurrentImage(item.images.night); }}
+                >
+                  Night
+                </button>
+              </div>
+            </div>
+          ) : (
+            <img src={item.image} alt={item.name} className="w-full h-32 object-cover rounded-lg mb-4 sm:h-40 lg:h-48" />
+          )}
+          <h3 className="text-lg font-semibold">{item.name}</h3>
+          {type === 'camera' && <p className="text-gray-600">{item.specs}</p>}
+          {type === 'recorder' && <p className="text-gray-600">Storage: {item.storage}, Channels: {item.channels}</p>}
+          {type === 'storage' && <p className="text-gray-600">Days per camera: {item.daysPerCamera}</p>}
+          {type === 'wire' && <p className="text-gray-600">Type: {item.type}, {item.unit}</p>}
+          {type === 'poe' && <p className="text-gray-600">Ports: {item.ports}</p>}
+          {type === 'rack' && <p className="text-gray-600">Capacity: {item.capacity}</p>}
+          <ul className="text-gray-600 list-disc list-inside mt-2">
+            {item.features.map((feature, index) => (
+              <li key={index}>{feature}</li>
+            ))}
+          </ul>
+          <p className="text-blue-600 font-bold mt-2">${item.price}{item.unit ? ` ${item.unit}` : ''}</p>
+          {type === 'camera' && isSelected && (
+            <div className="mt-4 flex items-center">
+              <label className="mr-2">Quantity:</label>
+              <input
+                type="number"
+                min="1"
+                max="16"
+                value={quantity || 1}
+                onChange={(e) => onQuantityChange(item.id, parseInt(e.target.value))}
+                className="w-16 p-1 border rounded-lg"
+              />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // AccessoryCard Component
+    function AccessoryCard({ item, isSelected, onToggle }) {
+      return (
+        <div className="flex items-center p-4 bg-white rounded-2xl shadow-lg">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => onToggle(item)}
+            className="w-5 h-5 text-blue-600 rounded"
+          />
+          <div className="ml-4 flex-1">
+            <img src={item.image} alt={item.name} className="w-full h-24 object-cover rounded-lg mb-4 sm:h-32 lg:h-36" />
+            <h3 className="text-lg font-semibold">{item.name}</h3>
+            <p className="text-gray-600">{item.category}</p>
+            <ul className="text-gray-600 list-disc list-inside mt-2">
+              {item.features.map((feature, index) => (
+                <li key={index}>{feature}</li>
+              ))}
+            </ul>
+            <p className="text-blue-600 font-bold mt-2">${item.price}</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Sidebar Component
+    function Sidebar({ selectedRecorder, selectedCameras, selectedStorage, selectedWire, selectedPoeSwitch, selectedRack, selectedAccessories, totalPrice }) {
+      return (
+        <div className="w-full lg:w-80 bg-white rounded-2xl shadow-lg p-6 sticky top-6">
+          <h2 className="text-xl font-semibold mb-4">Selected Products</h2>
+          <div className="space-y-4">
+            {selectedRecorder && (
+              <div>
+                <h3 className="text-lg font-medium">Recorder</h3>
+                <p className="text-gray-600">{selectedRecorder.name} - ${selectedRecorder.price}</p>
+              </div>
+            )}
+            {selectedCameras.length > 0 && (
+              <div>
+                <h3 className="text-lg font-medium">Cameras</h3>
+                {selectedCameras.map(({ camera, quantity }) => (
+                  <p key={camera.id} className="text-gray-600">{camera.name} (x{quantity}) - ${camera.price * quantity}</p>
+                ))}
+              </div>
+            )}
+            {selectedStorage && (
+              <div>
+                <h3 className="text-lg font-medium">Storage</h3>
+                <p className="text-gray-600">{selectedStorage.name} - ${selectedStorage.price}</p>
+              </div>
+            )}
+            {selectedWire && (
+              <div>
+                <h3 className="text-lg font-medium">Wire</h3>
+                <p className="text-gray-600">{selectedWire.name} (100m) - ${selectedWire.price * 100}</p>
+              </div>
+            )}
+            {selectedPoeSwitch && (
+              <div>
+                <h3 className="text-lg font-medium">PoE Switch</h3>
+                <p className="text-gray-600">{selectedPoeSwitch.name} - ${selectedPoeSwitch.price}</p>
+              </div>
+            )}
+            {selectedRack && (
+              <div>
+                <h3 className="text-lg font-medium">Camera Rack</h3>
+                <p className="text-gray-600">{selectedRack.name} - ${selectedRack.price}</p>
+              </div>
+            )}
+            {selectedAccessories.length > 0 && (
+              <div>
+                <h3 className="text-lg font-medium">Accessories</h3>
+                {selectedAccessories.map((acc) => (
+                  <p key={acc.id} className="text-gray-600">{acc.name} - ${acc.price}</p>
+                ))}
+              </div>
+            )}
+            {(selectedRecorder || selectedCameras.length > 0 || selectedStorage || selectedWire || selectedPoeSwitch || selectedRack || selectedAccessories.length > 0) && (
+              <div className="border-t pt-4">
+                <p className="text-xl font-bold">Total: ${totalPrice()}</p>
+              </div>
+            )}
+            {!selectedRecorder && selectedCameras.length === 0 && !selectedStorage && !selectedWire && !selectedPoeSwitch && !selectedRack && selectedAccessories.length === 0 && (
+              <p className="text-gray-500">No products selected yet.</p>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    // Main App Component
+    function App() {
+      const [step, setStep] = useState(1);
+      const [recorderType, setRecorderType] = useState(null);
+      const [selectedRecorder, setSelectedRecorder] = useState(null);
+      const [selectedCameras, setSelectedCameras] = useState([]);
+      const [selectedStorage, setSelectedStorage] = useState(null);
+      const [selectedWire, setSelectedWire] = useState(null);
+      const [selectedPoeSwitch, setSelectedPoeSwitch] = useState(null);
+      const [selectedRack, setSelectedRack] = useState(null);
+      const [selectedAccessories, setSelectedAccessories] = useState([]);
+      const [phoneNumber, setPhoneNumber] = useState('');
+      const [address, setAddress] = useState('');
+
+      const handleRecorderTypeSelect = (type) => {
+        setRecorderType(type);
+        setSelectedRecorder(null);
+        setSelectedCameras([]);
+        setSelectedStorage(null);
+        setSelectedWire(null);
+        setSelectedPoeSwitch(null);
+        setSelectedRack(null);
+        setSelectedAccessories([]);
+        setStep(2);
+      };
+
+      const handleRecorderSelect = (recorder) => {
+        setSelectedRecorder(recorder);
+        setStep(3);
+      };
+
+      const handleCameraSelect = (camera) => {
+        setSelectedCameras((prev) => {
+          const existing = prev.find((item) => item.camera.id === camera.id);
+          if (existing) {
+            return prev.filter((item) => item.camera.id !== camera.id);
+          }
+          return [...prev, { camera, quantity: 1 }];
+        });
+      };
+
+      const handleCameraQuantityChange = (cameraId, quantity) => {
+        setSelectedCameras((prev) =>
+          prev.map((item) =>
+            item.camera.id === cameraId ? { ...item, quantity: Math.max(1, Math.min(16, quantity)) } : item
+          )
+        );
+      };
+
+      const handleAddMoreCameras = () => {
+        setSelectedCameras((prev) => {
+          const totalCameras = prev.reduce((sum, { quantity }) => sum + quantity, 0);
+          if (totalCameras >= 16) return prev; // Max 16 cameras
+          
+          // If no cameras selected, add the first camera from the list with quantity 2
+          if (prev.length === 0) {
+            const camera = cameras[recorderType === 'NVR' ? 'IP' : 'Analog'][0];
+            return [{ camera, quantity: 2 }];
+          }
+          
+          // Increment quantity of selected cameras by 2, respecting max 16
+          return prev.map((item) => {
+            const newQuantity = Math.min(item.quantity + 2, 16 - (totalCameras - item.quantity));
+            return { ...item, quantity: newQuantity };
+          });
+        });
+      };
+
+      const handleStorageSelect = (storage) => {
+        setSelectedStorage(storage);
+        setStep(recorderType === 'NVR' ? 5 : 6);
+      };
+
+      const handleWireSelect = (wire) => {
+        setSelectedWire(wire);
+        setStep(6);
+      };
+
+      const handlePoeSwitchSelect = (poeSwitch) => {
+        setSelectedPoeSwitch(poeSwitch);
+        setStep(7);
+      };
+
+      const handleRackSelect = (rack) => {
+        setSelectedRack(rack);
+        setStep(8);
+      };
+
+      const handleAccessoryToggle = (accessory) => {
+        setSelectedAccessories((prev) =>
+          prev.includes(accessory)
+            ? prev.filter((item) => item.id !== accessory.id)
+            : [...prev, accessory]
+        );
+      };
+
+      const handleEditStep = (stepNumber) => {
+        setStep(stepNumber);
+      };
+
+      const handleDownloadPDF = () => {
+        alert('PDF download functionality would be implemented here.');
+      };
+
+      const handleCallUs = () => {
+        window.location.href = 'tel:+1234567890';
+      };
+
+      const handleWhatsApp = () => {
+        const message = encodeURIComponent(
+          `Hello, I'm interested in a CCTV system quotation:\n` +
+          (selectedRecorder ? `Recorder: ${selectedRecorder.name} - $${selectedRecorder.price}\n` : '') +
+          (selectedCameras.length > 0
+            ? `Cameras:\n${selectedCameras.map(({ camera, quantity }) => `  ${camera.name} (x${quantity}) - $${camera.price * quantity}`).join('\n')}\n`
+            : '') +
+          (selectedStorage ? `Storage: ${selectedStorage.name} - $${selectedStorage.price}\n` : '') +
+          (selectedWire ? `Wire: ${selectedWire.name} (100m) - $${selectedWire.price * 100}\n` : '') +
+          (selectedPoeSwitch ? `PoE Switch: ${selectedPoeSwitch.name} - $${selectedPoeSwitch.price}\n` : '') +
+          (selectedRack ? `Rack: ${selectedRack.name} - $${selectedRack.price}\n` : '') +
+          (selectedAccessories.length > 0
+            ? `Accessories:\n${selectedAccessories.map((acc) => `  ${acc.name} - $${acc.price}`).join('\n')}\n`
+            : '') +
+          `Total: $${totalPrice()}`
+        );
+        window.open(`https://wa.me/1234567890?text=${message}`, '_blank');
+      };
+
+      const handleCallbackSubmit = (e) => {
+        e.preventDefault();
+        alert(`Callback requested for ${phoneNumber} at ${address}`);
+        setPhoneNumber('');
+        setAddress('');
+      };
+
+      const totalPrice = () => {
+        const recorderPrice = selectedRecorder ? selectedRecorder.price : 0;
+        const camerasPrice = selectedCameras.reduce((sum, { camera, quantity }) => sum + camera.price * quantity, 0);
+        const storagePrice = selectedStorage ? selectedStorage.price : 0;
+        const wirePrice = selectedWire ? selectedWire.price * 100 : 0; // Assuming 100m default
+        const poeSwitchPrice = selectedPoeSwitch ? selectedPoeSwitch.price : 0;
+        const rackPrice = selectedRack ? selectedRack.price : 0;
+        const accessoriesPrice = selectedAccessories.reduce((sum, acc) => sum + acc.price, 0);
+        return recorderPrice + camerasPrice + storagePrice + wirePrice + poeSwitchPrice + rackPrice + accessoriesPrice;
+      };
+
+      const calculateStorageDays = () => {
+        if (!selectedStorage || selectedCameras.length === 0) return '';
+        const totalCameras = selectedCameras.reduce((sum, { quantity }) => sum + quantity, 0);
+        const days = selectedStorage.daysPerCamera / totalCameras;
+        return `~${Math.floor(days)} days of storage for ${totalCameras} camera${totalCameras > 1 ? 's' : ''}`;
+      };
+
+      return (
+        <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4 sm:p-6 font-sans">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-8 text-gray-800">CCTV Quotation Builder</h1>
+          <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-4 sm:gap-6">
+            <div className="flex-1 bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+              {/* Step Indicator */}
+              <div className="flex justify-between mb-6 sm:mb-8 overflow-x-auto">
+                {['Recorder Type', 'Recorder', 'Cameras', 'Storage', 'Wires', 'PoE Switch', 'Racks', 'Accessories', 'Review'].map((label, index) => (
+                  <div
+                    key={index + 1}
+                    className={`flex-1 text-center py-2 px-2 sm:px-4 whitespace-nowrap text-sm sm:text-base ${
+                      step === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'
+                    } rounded-lg mx-1`}
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
+
+              {/* Step 1: Select Recorder Type */}
+              {step === 1 && (
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-6">Select Recorder Type</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    <div
+                      className={`p-6 rounded-2xl bg-white shadow-lg cursor-pointer transition-all duration-200 ${
+                        recorderType === 'NVR' ? 'border-2 border-blue-500' : 'border border-gray-200'
+                      } hover:shadow-xl`}
+                      onClick={() => handleRecorderTypeSelect('NVR')}
+                    >
+                      <h3 className="text-lg font-semibold">NVR (Network Video Recorder)</h3>
+                      <p className="text-gray-600">For IP Cameras with PoE support</p>
+                    </div>
+                    <div
+                      className={`p-6 rounded-2xl bg-white shadow-lg cursor-pointer transition-all duration-200 ${
+                        recorderType === 'DVR' ? 'border-2 border-blue-500' : 'border border-gray-200'
+                      } hover:shadow-xl`}
+                      onClick={() => handleRecorderTypeSelect('DVR')}
+                    >
+                      <h3 className="text-lg font-semibold">DVR (Digital Video Recorder)</h3>
+                      <p className="text-gray-600">For Analog Cameras</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 2: Select Recorder */}
+              {step === 2 && (
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-6">Select {recorderType} Recorder</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {recorders[recorderType].map((recorder) => (
+                      <ProductCard
+                        key={recorder.id}
+                        item={recorder}
+                        isSelected={selectedRecorder?.id === recorder.id}
+                        onSelect={handleRecorderSelect}
+                        type="recorder"
+                      />
+                    ))}
+                  </div>
+                  <button
+                    className="mt-6 px-6 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                    onClick={() => setStep(1)}
+                  >
+                    Back
+                  </button>
+                </div>
+              )}
+
+              {/* Step 3: Select Cameras */}
+              {step === 3 && (
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-6">Select {recorderType === 'NVR' ? 'IP' : 'Analog'} Cameras</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {cameras[recorderType === 'NVR' ? 'IP' : 'Analog'].map((camera) => (
+                      <ProductCard
+                        key={camera.id}
+                        item={camera}
+                        isSelected={selectedCameras.some((item) => item.camera.id === camera.id)}
+                        onSelect={handleCameraSelect}
+                        type="camera"
+                        quantity={selectedCameras.find((item) => item.camera.id === camera.id)?.quantity}
+                        onQuantityChange={handleCameraQuantityChange}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4">
+                    <button
+                      className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                      onClick={() => setStep(2)}
+                    >
+                      Back
+                    </button>
+                    <div className="flex gap-4">
+                      <button
+                        className="px-6 py-2 bg-blue-500 text-white rounded-lg flex items-center"
+                        onClick={handleAddMoreCameras}
+                      >
+                        <i className="fas fa-plus mr-2"></i> Add More Cameras
+                      </button>
+                      <button
+                        className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                        onClick={() => setStep(4)}
+                        disabled={selectedCameras.length === 0}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 4: Select Storage */}
+              {step === 4 && (
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-6">Select Storage</h2>
+                  <p className="text-gray-600 mb-4">Estimated storage: {calculateStorageDays()}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    {storageOptions.map((storage) => (
+                      <ProductCard
+                        key={storage.id}
+                        item={storage}
+                        isSelected={selectedStorage?.id === storage.id}
+                        onSelect={handleStorageSelect}
+                        type="storage"
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-between mt-6">
+                    <button
+                      className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                      onClick={() => setStep(3)}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                      onClick={() => setStep(recorderType === 'NVR' ? 5 : 6)}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 5: Select Wires (NVR only) */}
+              {step === 5 && recorderType === 'NVR' && (
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-6">Select Wires</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    {wiresOptions.map((wire) => (
+                      <ProductCard
+                        key={wire.id}
+                        item={wire}
+                        isSelected={selectedWire?.id === wire.id}
+                        onSelect={handleWireSelect}
+                        type="wire"
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-between mt-6">
+                    <button
+                      className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                      onClick={() => setStep(4)}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                      onClick={() => setStep(6)}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 6: Select PoE Switch (NVR only) */}
+              {step === 6 && recorderType === 'NVR' && (
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-6">Select PoE Switch</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    {poeSwitches.map((poeSwitch) => (
+                      <ProductCard
+                        key={poeSwitch.id}
+                        item={poeSwitch}
+                        isSelected={selectedPoeSwitch?.id === poeSwitch.id}
+                        onSelect={handlePoeSwitchSelect}
+                        type="poe"
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-between mt-6">
+                    <button
+                      className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                      onClick={() => setStep(5)}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                      onClick={() => setStep(7)}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 7: Select Camera Racks */}
+              {step === (recorderType === 'NVR' ? 7 : 6) && (
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-6">Select Camera Racks</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    {cameraRacks.map((rack) => (
+                      <ProductCard
+                        key={rack.id}
+                        item={rack}
+                        isSelected={selectedRack?.id === rack.id}
+                        onSelect={handleRackSelect}
+                        type="rack"
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-between mt-6">
+                    <button
+                      className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                      onClick={() => setStep(recorderType === 'NVR' ? 6 : 5)}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                      onClick={() => setStep(recorderType === 'NVR' ? 8 : 7)}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 8: Select Accessories */}
+              {step === (recorderType === 'NVR' ? 8 : 7) && (
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-6">Select Accessories</h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                    {accessories.map((accessory) => (
+                      <AccessoryCard
+                        key={accessory.id}
+                        item={accessory}
+                        isSelected={selectedAccessories.includes(accessory)}
+                        onToggle={handleAccessoryToggle}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-between mt-6">
+                    <button
+                      className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                      onClick={() => setStep(recorderType === 'NVR' ? 7 : 6)}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                      onClick={() => setStep(recorderType === 'NVR' ? 9 : 8)}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 9: Review & Contact */}
+              {step === (recorderType === 'NVR' ? 9 : 8) && (
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-6">Review & Contact</h2>
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold">Selected Recorder</h3>
+                      <p>{selectedRecorder?.name} - ${selectedRecorder?.price}</p>
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => handleEditStep(2)}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">Selected Cameras</h3>
+                      {selectedCameras.length > 0 ? (
+                        selectedCameras.map(({ camera, quantity }) => (
+                          <p key={camera.id}>
+                            {camera.name} (x{quantity}) - ${camera.price * quantity}
+                          </p>
+                        ))
+                      ) : (
+                        <p>No cameras selected</p>
+                      )}
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => handleEditStep(3)}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">Selected Storage</h3>
+                      <p>{selectedStorage?.name} - ${selectedStorage?.price} ({calculateStorageDays()})</p>
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => handleEditStep(4)}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    {recorderType === 'NVR' && (
+                      <>
+                        <div>
+                          <h3 className="text-lg font-semibold">Selected Wire</h3>
+                          <p>{selectedWire?.name} (100m) - ${selectedWire?.price * 100}</p>
+                          <button
+                            className="text-blue-500 underline"
+                            onClick={() => handleEditStep(5)}
+                          >
+                            Edit
+                          </button>
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold">Selected PoE Switch</h3>
+                          <p>{selectedPoeSwitch?.name} - ${selectedPoeSwitch?.price}</p>
+                          <button
+                            className="text-blue-500 underline"
+                            onClick={() => handleEditStep(6)}
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    <div>
+                      <h3 className="text-lg font-semibold">Selected Camera Rack</h3>
+                      <p>{selectedRack?.name} - ${selectedRack?.price}</p>
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => handleEditStep(recorderType === 'NVR' ? 7 : 6)}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">Selected Accessories</h3>
+                      {selectedAccessories.length > 0 ? (
+                        selectedAccessories.map((acc) => (
+                          <p key={acc.id}>
+                            {acc.name} - ${acc.price}
+                          </p>
+                        ))
+                      ) : (
+                        <p>No accessories selected</p>
+                      )}
+                      <button
+                        className="text-blue-500 underline"
+                        onClick={() => handleEditStep(recorderType === 'NVR' ? 8 : 7)}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    <div className="text-xl font-bold">
+                      Total Cost: ${totalPrice()}
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                      <button
+                        className="flex items-center justify-center px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                        onClick={handleWhatsApp}
+                      >
+                        <i className="fab fa-whatsapp mr-2"></i> Message on WhatsApp
+                      </button>
+                      <button
+                        className="flex items-center justify-center px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                        onClick={handleCallUs}
+                      >
+                        <i className="fas fa-phone mr-2"></i> Call Us
+                      </button>
+                    </div>
+                    <h3 className="text-lg font-semibold mt-6 mb-4">Request a Callback</h3>
+                    <div className="bg-white p-6 rounded-2xl shadow-lg">
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-gray-700">Phone Number</label>
+                          <input
+                            type="tel"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            className="w-full p-2 border rounded-lg"
+                            placeholder="Enter your phone number"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-gray-700">Address</label>
+                          <textarea
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            className="w-full p-2 border rounded-lg"
+                            placeholder="Enter your address"
+                          />
+                        </div>
+                        <button
+                          className="w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                          onClick={handleCallbackSubmit}
+                          disabled={!phoneNumber || !address}
+                        >
+                          Request Callback
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between mt-6">
+                    <button
+                      className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg"
+                      onClick={() => setStep(recorderType === 'NVR' ? 8 : 7)}
+                    >
+                      Back
+                    </button>
+                    <button
+                      className="px-6 py-2 bg-blue-500 text-white rounded-lg"
+                      onClick={handleDownloadPDF}
+                    >
+                      Download PDF
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* Sidebar */}
+            <Sidebar
+              selectedRecorder={selectedRecorder}
+              selectedCameras={selectedCameras}
+              selectedStorage={selectedStorage}
+              selectedWire={selectedWire}
+              selectedPoeSwitch={selectedPoeSwitch}
+              selectedRack={selectedRack}
+              selectedAccessories={selectedAccessories}
+              totalPrice={totalPrice}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    // Render the app
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
