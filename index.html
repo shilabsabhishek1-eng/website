@@ -368,9 +368,9 @@
             return [{ camera, quantity: 2 }];
           }
           
-          // Increment quantity of selected cameras by 2, respecting max 16
+          // Increment quantity of selected cameras by 1, respecting max 16
           return prev.map((item) => {
-            const newQuantity = Math.min(item.quantity + 2, 16 - (totalCameras - item.quantity));
+            const newQuantity = Math.min(item.quantity + 1, 16 - (totalCameras - item.quantity));
             return { ...item, quantity: newQuantity };
           });
         });
